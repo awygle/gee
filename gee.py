@@ -40,8 +40,8 @@ def add(args):
 	print 'git remote add -f %s %s' % (args.component, args.origin)
 
 	# no-commit merge - pull it in and wait
-	local('git merge -s ours --no-commit %s/%s' % (component, branch))
-	print('git merge -s ours --no-commit %s/%s' % (component, branch))
+	local('git merge -s ours --squash --no-commit %s/%s' % (component, branch))
+	print('git merge -s ours --squash --no-commit %s/%s' % (component, branch))
 
 	# read the tree to the required location
 	local('git read-tree --prefix=%s -u %s/%s' % (location, component, branch))
