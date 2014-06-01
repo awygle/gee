@@ -1,0 +1,7 @@
+Properties of a component:
+	name - required
+	origin - required (for V1, may default to GitHub or a config value later)
+	branch - [master]
+	location - [name]
+	
+Can't use git config because it doesn't get pushed - local only (for when you inevitably have that idea again)
