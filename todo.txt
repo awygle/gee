@@ -1,10 +1,8 @@
 Use cases:
 
-check - check to see whether your components have updates to make
-update [project] - update all components and merge them into the current repo
+check - check to see whether your components have updates to make - deferred (turns out it's harder than it seems)
 add - add new component to the repo - V1
 remove - remove component from the repo - V1
 update [component] - update the specified component - V1
-push [project] - push the main repo and all component repos
-push [component] - split out changes to the component and push them
+push [component] - split out changes to the component and push them - V1
 

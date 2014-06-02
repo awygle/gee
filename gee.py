@@ -21,8 +21,6 @@ def check_component(comp):
 
 def remove(root, args, gee):
 	if not args.components:
-		if not args.all:
-			raise ValueError("No components specified (did you mean --all?)")
 		args.components = gee.keys()
 	for component in args.components:
 		if not component in gee:
@@ -49,14 +47,22 @@ def update(root, args, gee):
 	if args.branch:
 		raise ValueError("Can't specify branch when updating yet")
 	if not args.components:
-		if not args.all:
-			raise ValueError("No components specified (did you mean --all?)")
 		args.components = gee.keys()
 	for component in args.components:
 		if not component in gee:
 			raise ValueError("Component specified does not exist: %s" % component)
 		print "Updating component %s to branch %s" % (component, gee[component]["branch"])
 		local("git pull -s recursive -X subtree=%s %s:%s", (gee[component]["location"], component, gee[component]["branch"]))
+
+def push(root, args, gee):
+	if not args.components:
+		args.components = gee.keys()
+	for component in args.components:
+		if not component in gee:
+			raise ValueError("Component specified does not exist: %s" % component)
+		print "Pushing changes to component %s to upstream branch %s" % (component, gee[component]["branch"])
+		# TODO fix this someday to not use git subtree
+		local("git subtree push --prefix=%s %s %s:refs/heads/%s" % (gee[component]["location"], component, gee[component]["branch"], gee[component]["branch"])
 
 def add(root, args, gee):
 	print args
@@ -121,20 +127,22 @@ add_parser.add_argument("--branch", "-b", action="store")
 add_parser.add_argument("--location", "-l", action="store")
 add_parser.set_defaults(func=add)
 
-check_parser = subparsers.add_parser("check", help="Check component status")
-check_parser.add_argument("components", action="store", nargs='*')
-check_parser.set_defaults(func=check)
+#check_parser = subparsers.add_parser("check", help="Check component status")
+#check_parser.add_argument("components", action="store", nargs='*')
+#check_parser.set_defaults(func=check)
 
 remove_parser = subparsers.add_parser("remove", help="Remove a component from the repo")
 remove_parser.add_argument("components", action="store", nargs="*")
-remove_parser.add_argument("--all", "-a", action="store_true")
 remove_parser.set_defaults(func=remove)
 
 update_parser = subparsers.add_parser("update", help="Update a component")
 update_parser.add_argument("components", action="store", nargs="*")
-update_parser.add_argument("--all", "-a", action="store_true")
 update_parser.add_argument("--branch", "-b", action="store")
 update_parser.set_defaults(func=update)
+
+push_parser = subparsers.add_parser("push", help="Push changes to a component upstream")
+push_parser.add_argument("components", action="store", nargs="*")
+push_parser.set_defaults(func=push)
 
 args = parser.parse_args()
 
